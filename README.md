@@ -1,2 +1,2 @@
 # com-news
-# test sync 2
+# test sync 3
