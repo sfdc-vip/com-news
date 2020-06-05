@@ -2,12 +2,42 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
+  docsync: streamroot/docsync@1.0.2
 # Orchestrate or schedule a set of jobs
-workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
-    jobs:
-      - welcome/run
+jobs:
+    build:
+        docker:
+            - image: alpine/git
+        parameters:
+            github-repo-name:
+                description: Target Project
+                type: env_var_name
+                default: GITHUB_REPO_NAME
+            github-repo-url:
+                description: Target Project URL
+                type: env_var_name
+                default: GITHUB_REPO_URL
+            github-user-name:
+                description: Username of GitHub account
+                type: env_var_name
+                default: GITHUB_USER_NAME
+            github-personnal-token:
+                description: GITHUB Token
+                type: env_var_name
+                default: GITHUB_PERSONAL_TOKEN
+            github-personnal-email:
+                description: GITHUB Email
+                type: env_var_name
+                default: GITHUB_PERSONAL_EMAIL
+        steps:
+        - checkout
+        - run:
+            name: "Upstream commits to Forked Project"
+            command: |
+                curr_pwd=`pwd`
+                echo "starting script execution:  "
+                echo $curr_pwd
+                echo "$USER"
+                ls -lrt
+                sh ./utility.sh ${<<parameters.github-personnal-token>>} ${<<parameters.github-personnal-email>>} ${<<parameters.github-user-name>>}
+                echo "after executing script"
